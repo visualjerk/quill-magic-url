@@ -3,7 +3,7 @@ import Delta from 'quill-delta'
 const REGEXP_GLOBAL = /https?:\/\/[\S]+/g
 const REGEXP_URL = /(https?:\/\/[\S]+)/
 
-export default class AutoLinks {
+export default class MagicUrl {
   constructor (quill) {
     this.quill = quill
     this.registerTypeListener()
