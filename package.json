@@ -1,6 +1,6 @@
 {
   "name": "quill-magic-url",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Checks for URLs during typing and pasting and automatically converts them to links.",
   "main": "dist/index.js",
   "babel": {
