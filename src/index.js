@@ -40,7 +40,7 @@ export default class MagicUrl {
         return
       }
       let lastOp = ops[ops.length - 1]
-      if (!lastOp.insert || !lastOp.insert.match(/\s/)) {
+      if (!lastOp.insert || typeof lastOp.insert !== 'string' || !lastOp.insert.match(/\s/)) {
         return
       }
       this.checkTextForUrl()

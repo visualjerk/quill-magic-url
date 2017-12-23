@@ -19,16 +19,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var REGEXP_GLOBAL = /https?:\/\/[\S]+/g;
 var REGEXP_URL = /(https?:\/\/[\S]+)/;
 
-var AutoLinks = function () {
-  function AutoLinks(quill) {
-    _classCallCheck(this, AutoLinks);
+var MagicUrl = function () {
+  function MagicUrl(quill) {
+    _classCallCheck(this, MagicUrl);
 
     this.quill = quill;
     this.registerTypeListener();
     this.registerPasteListener();
   }
 
-  _createClass(AutoLinks, [{
+  _createClass(MagicUrl, [{
     key: 'registerPasteListener',
     value: function registerPasteListener() {
       this.quill.clipboard.addMatcher(Node.TEXT_NODE, function (node, delta) {
@@ -65,7 +65,7 @@ var AutoLinks = function () {
           return;
         }
         var lastOp = ops[ops.length - 1];
-        if (!lastOp.insert || !lastOp.insert.match(/\s/)) {
+        if (!lastOp.insert || typeof lastOp.insert !== 'string' || !lastOp.insert.match(/\s/)) {
           return;
         }
         _this.checkTextForUrl();
@@ -102,7 +102,7 @@ var AutoLinks = function () {
     }
   }]);
 
-  return AutoLinks;
+  return MagicUrl;
 }();
 
-exports.default = AutoLinks;
+exports.default = MagicUrl;
