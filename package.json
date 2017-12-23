@@ -1,0 +1,42 @@
+{
+  "name": "quill-magic-url",
+  "version": "0.0.1",
+  "description": "Checks for URLs during typing and pasting and automatically converts them to links.",
+  "main": "dist/index.js",
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-1"
+    ]
+  },
+  "scripts": {
+    "build": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualjerk/quill-magic-url.git"
+  },
+  "keywords": [
+    "quill",
+    "url",
+    "links",
+    "check",
+    "paste",
+    "type"
+  ],
+  "author": "Jörg Bayreuther <jb@visualjerk.de> (https://github.com/visualjerk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualjerk/quill-magic-url/issues"
+  },
+  "homepage": "https://github.com/visualjerk/quill-magic-url",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1"
+  },
+  "dependencies": {
+    "quill-delta": "^3.6.2"
+  }
+}
