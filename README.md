@@ -7,7 +7,7 @@ Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-l
 ## Install
 
 ```bash
-npm install quill-magic-url -s
+npm install quill-magic-url --save
 ```
 
 ## Usage
