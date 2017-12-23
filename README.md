@@ -2,6 +2,8 @@
 
 Checks for URLs during typing and pasting and automatically converts them to links.
 
+Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-links](https://github.com/SmallImprovements/quill-auto-links).
+
 ## Usage
 
 ```javascript
