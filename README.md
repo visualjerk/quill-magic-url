@@ -29,7 +29,7 @@ const quill = new Quill(editor, {
 });
 ```
 
-Thanks to [marciodsousa](https://github.com/marciodsousa) you can also provide custom regular expressions:
+Thanks to [@marciodsousa](https://github.com/marciodsousa) you can also provide custom regular expressions:
 
 ```javascript
 const quill = new Quill(editor, {
