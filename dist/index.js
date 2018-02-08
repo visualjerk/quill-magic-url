@@ -20,10 +20,11 @@ var REGEXP_GLOBAL = /https?:\/\/[\S]+/g;
 var REGEXP_URL = /(https?:\/\/[\S]+)/;
 
 var MagicUrl = function () {
-  function MagicUrl(quill) {
+  function MagicUrl(quill, options) {
     _classCallCheck(this, MagicUrl);
 
     this.quill = quill;
+    this.options = options;
     this.registerTypeListener();
     this.registerPasteListener();
   }
@@ -31,11 +32,13 @@ var MagicUrl = function () {
   _createClass(MagicUrl, [{
     key: 'registerPasteListener',
     value: function registerPasteListener() {
+      var _this = this;
+
       this.quill.clipboard.addMatcher(Node.TEXT_NODE, function (node, delta) {
         if (typeof node.data !== 'string') {
           return;
         }
-        var matches = node.data.match(REGEXP_GLOBAL);
+        var matches = node.data.match(_this.options ? _this.options.globalRegularExpression : REGEXP_GLOBAL);
         if (matches && matches.length > 0) {
           var ops = [];
           var str = node.data;
@@ -55,7 +58,7 @@ var MagicUrl = function () {
   }, {
     key: 'registerTypeListener',
     value: function registerTypeListener() {
-      var _this = this;
+      var _this2 = this;
 
       this.quill.on('text-change', function (delta) {
         var ops = delta.ops;
@@ -68,7 +71,7 @@ var MagicUrl = function () {
         if (!lastOp.insert || typeof lastOp.insert !== 'string' || !lastOp.insert.match(/\s/)) {
           return;
         }
-        _this.checkTextForUrl();
+        _this2.checkTextForUrl();
       });
     }
   }, {
@@ -86,7 +89,7 @@ var MagicUrl = function () {
       if (!leaf.text) {
         return;
       }
-      var urlMatch = leaf.text.match(REGEXP_URL);
+      var urlMatch = leaf.text.match(this.options ? this.options.urlRegularExpression : REGEXP_URL);
       if (!urlMatch) {
         return;
       }
