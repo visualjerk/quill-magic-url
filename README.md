@@ -17,10 +17,29 @@ import Quill from 'quill';
 import MagicUrl from 'quill-magic-url';
 
 Quill.register('modules/magicUrl', MagicUrl);
+```
 
+Basic usage with default configuration:
+
+```javascript
 const quill = new Quill(editor, {
   modules: {
     magicUrl: true
   }
 });
 ```
+
+Thanks to [marciodsousa](https://github.com/marciodsousa) you can also provide custom regular expressions:
+
+```javascript
+const quill = new Quill(editor, {
+  modules: {
+      magicUrl: {
+        globalRegularExpression: /(https?:\/\/|www\.|mailto:)[\S]+/g,
+        urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)/
+      }
+  }
+});
+```
+
+For some inspiration on some crazy url regex, [checkout this](https://mathiasbynens.be/demo/url-regex).
