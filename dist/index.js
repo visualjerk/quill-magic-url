@@ -40,17 +40,17 @@ var MagicUrl = function () {
         }
         var matches = node.data.match(_this.options ? _this.options.globalRegularExpression : REGEXP_GLOBAL);
         if (matches && matches.length > 0) {
-          var ops = [];
+          var newDelta = new _quillDelta2.default();
           var str = node.data;
           matches.forEach(function (match) {
             var split = str.split(match);
             var beforeLink = split.shift();
-            ops.push({ insert: beforeLink });
-            ops.push({ insert: match, attributes: { link: match } });
+            newDelta.insert(beforeLink);
+            newDelta.insert(match, { link: match });
             str = split.join(match);
           });
-          ops.push({ insert: str });
-          delta.ops = ops;
+          newDelta.insert(str);
+          delta.ops = newDelta.ops;
         }
         return delta;
       });

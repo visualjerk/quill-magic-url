@@ -17,17 +17,17 @@ export default class MagicUrl {
       }
       const matches = node.data.match(this.options ? this.options.globalRegularExpression : REGEXP_GLOBAL)
       if (matches && matches.length > 0) {
-        const ops = []
+        const newDelta = new Delta()
         let str = node.data
         matches.forEach(match => {
           const split = str.split(match)
           const beforeLink = split.shift()
-          ops.push({insert: beforeLink})
-          ops.push({insert: match, attributes: {link: match}})
+          newDelta.insert(beforeLink)
+          newDelta.insert(match, {link: match})
           str = split.join(match)
         })
-        ops.push({insert: str})
-        delta.ops = ops
+        newDelta.insert(str)
+        delta.ops = newDelta.ops
       }
       return delta
     })
