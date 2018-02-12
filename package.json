@@ -1,6 +1,6 @@
 {
   "name": "quill-magic-url",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Checks for URLs during typing and pasting and automatically converts them to links.",
   "main": "dist/index.js",
   "babel": {
@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/visualjerk/quill-magic-url",
   "devDependencies": {
+    "eslint": "4.14.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
