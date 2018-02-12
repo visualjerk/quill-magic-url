@@ -1,6 +1,6 @@
 {
   "name": "quill-magic-url",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Checks for URLs during typing and pasting and automatically converts them to links.",
   "main": "dist/index.js",
   "babel": {
@@ -10,7 +10,8 @@
     ]
   },
   "scripts": {
-    "build": "babel src -d dist"
+    "build": "webpack -p --progress --colors",
+    "dev": "webpack --progress --colors --watch"
   },
   "repository": {
     "type": "git",
@@ -33,8 +34,10 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-1": "^6.24.1"
+    "babel-preset-stage-1": "^6.24.1",
+    "webpack": "^3.11.0"
   },
   "dependencies": {
     "quill-delta": "^3.6.2"

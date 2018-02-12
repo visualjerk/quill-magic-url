@@ -1,12 +1,15 @@
 import Delta from 'quill-delta'
 
-const REGEXP_GLOBAL = /https?:\/\/[\S]+/g
-const REGEXP_URL =    /(https?:\/\/[\S]+)/
+const defaults = {
+  globalRegularExpression: /https?:\/\/[\S]+/g,
+  urlRegularExpression: /(https?:\/\/[\S]+)/
+}
 
 export default class MagicUrl {
   constructor (quill, options) {
     this.quill = quill
-    this.options = options
+    options = options || {}
+    this.options = {...defaults, ...options}
     this.registerTypeListener()
     this.registerPasteListener()
   }
@@ -15,7 +18,7 @@ export default class MagicUrl {
       if (typeof node.data !== 'string') {
         return
       }
-      const matches = node.data.match(this.options ? this.options.globalRegularExpression : REGEXP_GLOBAL)
+      const matches = node.data.match(this.options.globalRegularExpression)
       if (matches && matches.length > 0) {
         const newDelta = new Delta()
         let str = node.data
@@ -56,7 +59,7 @@ export default class MagicUrl {
     if (!leaf.text) {
       return
     }
-    let urlMatch = leaf.text.match(this.options ? this.options.urlRegularExpression : REGEXP_URL )
+    let urlMatch = leaf.text.match(this.options.urlRegularExpression)
     if (!urlMatch) {
       return
     }
@@ -71,4 +74,8 @@ export default class MagicUrl {
       .insert(url, {link: url})
     this.quill.updateContents(ops)
   }
+}
+
+if (window.Quill) {
+  window.Quill.register('modules/magicUrl', MagicUrl);
 }
