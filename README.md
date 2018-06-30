@@ -4,6 +4,8 @@ Checks for URLs during typing and pasting and automatically converts them to lin
 
 Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-links](https://github.com/SmallImprovements/quill-auto-links).
 
+[[https://github.com/visualjerk/quill-magic-url/blob/master/docs/quill-magic-url.gif]]
+
 ## Install
 
 ```bash
