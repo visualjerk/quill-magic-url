@@ -7,6 +7,9 @@ module.exports = {
     libraryTarget: 'umd',
     filename: "./dist/index.js"
   },
+  devServer: {
+    contentBase: './demo'
+  },
   module: {
     rules: [
       {
