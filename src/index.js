@@ -1,8 +1,14 @@
 import Delta from 'quill-delta'
+import normalizeUrl from 'normalize-url'
 
 const defaults = {
-  globalRegularExpression: /https?:\/\/[\S]+/g,
-  urlRegularExpression: /(https?:\/\/[\S]+)/
+  globalRegularExpression: /(https?:\/\/|www\.)[\S]+/g,
+  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/,
+  normalizeRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/,
+  normalizeUrlOptions: {
+    stripFragment: false,
+    stripWWW: false
+  }
 }
 
 export default class MagicUrl {
@@ -71,8 +77,14 @@ export default class MagicUrl {
     const ops = new Delta()
       .retain(index)
       .delete(url.length)
-      .insert(url, {link: url})
+      .insert(url, {link: this.normalize(url)})
     this.quill.updateContents(ops)
+  }
+  normalize (url) {
+    if (this.options.normalizeRegularExpression.test(url)) {
+      return normalizeUrl(url, this.options.normalizeUrlOptions)
+    }
+    return url
   }
 }
 

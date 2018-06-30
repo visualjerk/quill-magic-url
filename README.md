@@ -1,6 +1,6 @@
 # quill-magic-url
 
-Checks for URLs during typing and pasting and automatically converts them to links.
+Checks for URLs during typing and pasting and automatically converts them to links and normalizes the links URL.
 
 Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-links](https://github.com/SmallImprovements/quill-auto-links).
 
@@ -10,7 +10,7 @@ Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-l
 npm install quill-magic-url --save
 ```
 
-## Usage
+## Basic Usage
 
 ```javascript
 import Quill from 'quill';
@@ -19,7 +19,7 @@ import MagicUrl from 'quill-magic-url';
 Quill.register('modules/magicUrl', MagicUrl);
 ```
 
-Basic usage with default configuration:
+**Basic usage with default options:**
 
 ```javascript
 const quill = new Quill(editor, {
@@ -29,17 +29,87 @@ const quill = new Quill(editor, {
 });
 ```
 
-Thanks to [@marciodsousa](https://github.com/marciodsousa) you can also provide custom regular expressions:
+**Usage with custom options:**
 
 ```javascript
 const quill = new Quill(editor, {
   modules: {
-      magicUrl: {
-        globalRegularExpression: /(https?:\/\/|www\.|mailto:)[\S]+/g,
-        urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)/
-      }
+    magicUrl: {
+      // Regex used to check URLs during typing
+      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/,
+      // Regex used to check URLs on paste
+      globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g
+    }
   }
 });
 ```
 
-For some inspiration on some crazy url regex, [checkout this](https://mathiasbynens.be/demo/url-regex).
+## Options
+
+### urlRegularExpression
+
+> Regex used to check for URLs during *typing*.
+
+**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/`
+
+**Example with custom Regex**
+
+```javascript
+magicUrl: {
+  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/
+}
+```
+
+### globalRegularExpression
+
+> Regex used to check for URLs on *paste*.
+
+**Default:** `/(https?:\/\/|www\.)[\S]+/g`
+
+**Example with custom Regex**
+
+```javascript
+magicUrl: {
+  globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g
+}
+```
+
+### normalizeRegularExpression
+
+> Regex used to check for URLs to be  *normalized*. 
+
+**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/`
+
+You will most likely want to keep this options default value.
+
+### normalizeUrlOptions
+
+> Options for normalizing the URL
+
+**Default:**
+```javascript
+{
+  stripFragment: false,
+  stripWWW: false
+}
+```
+
+**Example with custom Regex**
+
+```javascript
+magicUrl: {
+  normalizeUrlOptions: {
+    stripFragment: false,
+    stripWWW: false,
+    normalizeProtocol: false
+  }
+}
+```
+
+**Available options**
+
+We use [normalize-url](https://github.com/sindresorhus/normalize-url) for normalizing URLs. You can find a detailed description of the possible options [here](https://github.com/sindresorhus/normalize-url#api).
+
+## More infos on URL Regex
+
+For some advanced URL Regex [check this out](https://mathiasbynens.be/demo/url-regex).
