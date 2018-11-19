@@ -62,7 +62,7 @@ export default class MagicUrl {
       return
     }
     let [leaf] = this.quill.getLeaf(sel.index)
-    if (!leaf.text) {
+    if (!leaf.text || leaf.parent.domNode.localName === "a") {
       return
     }
     let urlMatch = leaf.text.match(this.options.urlRegularExpression)
