@@ -69,8 +69,9 @@ export default class MagicUrl {
     if (!urlMatch) {
       return
     }
-    let stepsBack = leaf.text.length - urlMatch.index
-    let index = sel.index - stepsBack
+    let leafIndex = this.quill.getIndex(leaf)
+    let index = leafIndex + urlMatch.index
+    
     this.textToUrl(index, urlMatch[0])
   }
   textToUrl (index, url) {
