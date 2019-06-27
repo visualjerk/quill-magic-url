@@ -32,7 +32,7 @@ export default class MagicUrl {
           const split = str.split(match)
           const beforeLink = split.shift()
           newDelta.insert(beforeLink)
-          newDelta.insert(match, {link: match})
+          newDelta.insert(match, {link: this.normalize(match)})
           str = split.join(match)
         })
         newDelta.insert(str)
@@ -71,7 +71,7 @@ export default class MagicUrl {
     }
     let leafIndex = this.quill.getIndex(leaf)
     let index = leafIndex + urlMatch.index
-    
+
     this.textToUrl(index, urlMatch[0])
   }
   textToUrl (index, url) {
