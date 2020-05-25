@@ -32,13 +32,14 @@
   "homepage": "https://github.com/visualjerk/quill-magic-url",
   "devDependencies": {
     "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.9.6",
+    "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.7.4",
-    "babel-loader": "^8.0.6",
     "normalize-url": "^4.5.0",
     "quill-delta": "^3.6.2"
   }
