@@ -6,7 +6,6 @@ const defaults = {
   urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/,
   normalizeRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/,
   normalizeUrlOptions: {
-    stripFragment: false,
     stripWWW: false
   }
 }
