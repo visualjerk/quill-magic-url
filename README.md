@@ -91,17 +91,16 @@ You will most likely want to keep this options default value.
 **Default:**
 ```javascript
 {
-  stripFragment: false,
   stripWWW: false
 }
 ```
 
-**Example with custom Regex**
+**Example with custom options**
 
 ```javascript
 magicUrl: {
   normalizeUrlOptions: {
-    stripFragment: false,
+    stripHash: true,
     stripWWW: false,
     normalizeProtocol: false
   }
