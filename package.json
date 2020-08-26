@@ -40,7 +40,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "normalize-url": "^4.5.0",
+    "normalize-url": "^5.1.0",
     "quill-delta": "^3.6.2"
   }
 }
