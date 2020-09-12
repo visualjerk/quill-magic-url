@@ -82,7 +82,11 @@ export default class MagicUrl {
   }
   normalize (url) {
     if (this.options.normalizeRegularExpression.test(url)) {
-      return normalizeUrl(url, this.options.normalizeUrlOptions)
+      try {
+        return normalizeUrl(url, this.options.normalizeUrlOptions)
+      } catch (error) {
+        console.error(error)
+      }
     }
     return url
   }
