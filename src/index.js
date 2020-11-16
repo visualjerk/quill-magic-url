@@ -76,8 +76,7 @@ export default class MagicUrl {
   textToUrl (index, url) {
     const ops = new Delta()
       .retain(index)
-      .delete(url.length)
-      .insert(url, {link: this.normalize(url)})
+      .retain(url.length, {link: this.normalize(url)})
     this.quill.updateContents(ops)
   }
   normalize (url) {
