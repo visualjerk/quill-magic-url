@@ -8,27 +8,36 @@ Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-l
 
 ## Install
 
+### From CDN
+
+```html
+<!-- After quill script includes -->
+<script src="https://unpkg.com/quill-magic-url@2.0.4/dist/index.js"></script>
+```
+
+### With NPM
+
 ```bash
 npm install quill-magic-url --save
 ```
 
-## Basic Usage
-
 ```javascript
-import Quill from 'quill';
-import MagicUrl from 'quill-magic-url';
+import Quill from 'quill'
+import MagicUrl from 'quill-magic-url'
 
-Quill.register('modules/magicUrl', MagicUrl);
+Quill.register('modules/magicUrl', MagicUrl)
 ```
+
+## Usage
 
 **Basic usage with default options:**
 
 ```javascript
 const quill = new Quill(editor, {
   modules: {
-    magicUrl: true
-  }
-});
+    magicUrl: true,
+  },
+})
 ```
 
 **Usage with custom options:**
@@ -40,17 +49,17 @@ const quill = new Quill(editor, {
       // Regex used to check URLs during typing
       urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/,
       // Regex used to check URLs on paste
-      globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g
-    }
-  }
-});
+      globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g,
+    },
+  },
+})
 ```
 
 ## Options
 
 ### urlRegularExpression
 
-> Regex used to check for URLs during *typing*.
+> Regex used to check for URLs during _typing_.
 
 **Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/`
 
@@ -64,7 +73,7 @@ magicUrl: {
 
 ### globalRegularExpression
 
-> Regex used to check for URLs on *paste*.
+> Regex used to check for URLs on _paste_.
 
 **Default:** `/(https?:\/\/|www\.)[\S]+/g`
 
@@ -78,7 +87,7 @@ magicUrl: {
 
 ### normalizeRegularExpression
 
-> Regex used to check for URLs to be  *normalized*. 
+> Regex used to check for URLs to be _normalized_.
 
 **Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/`
 
@@ -89,6 +98,7 @@ You will most likely want to keep this options default value.
 > Options for normalizing the URL
 
 **Default:**
+
 ```javascript
 {
   stripWWW: false
