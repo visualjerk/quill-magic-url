@@ -2,9 +2,9 @@ import Delta from 'quill-delta'
 import normalizeUrl from 'normalize-url'
 
 const defaults = {
-  globalRegularExpression: /(https?:\/\/|www\.)[\S]+/g,
-  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/,
-  normalizeRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/,
+  globalRegularExpression: /(https?:\/\/|www\.)[\S]+/gi,
+  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/i,
+  normalizeRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/i,
   normalizeUrlOptions: {
     stripWWW: false
   }
