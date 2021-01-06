@@ -63,7 +63,7 @@ const quill = new Quill(editor, {
 
 > Regex used to check for URLs during _typing_.
 
-**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/`
+**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/i`
 
 **Example with custom Regex**
 
@@ -77,7 +77,7 @@ magicUrl: {
 
 > Regex used to check for URLs on _paste_.
 
-**Default:** `/(https?:\/\/|www\.)[\S]+/g`
+**Default:** `/(https?:\/\/|www\.)[\S]+/gi`
 
 **Example with custom Regex**
 
@@ -91,7 +91,7 @@ magicUrl: {
 
 > Regex used to check for URLs to be _normalized_.
 
-**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/`
+**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/i`
 
 You will most likely want to keep this options default value.
 
