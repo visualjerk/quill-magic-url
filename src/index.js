@@ -42,13 +42,13 @@ export default class MagicUrl {
   }
   registerTypeListener () {
     this.quill.on('text-change', (delta) => {
-      let ops = delta.ops
+      const ops = delta.ops
       // Only return true, if last operation includes whitespace inserts
       // Equivalent to listening for enter, tab or space
       if (!ops || ops.length < 1 || ops.length > 2) {
         return
       }
-      let lastOp = ops[ops.length - 1]
+      const lastOp = ops[ops.length - 1]
       if (!lastOp.insert || typeof lastOp.insert !== 'string' || !lastOp.insert.match(/\s/)) {
         return
       }
@@ -56,20 +56,20 @@ export default class MagicUrl {
     })
   }
   checkTextForUrl () {
-    let sel = this.quill.getSelection()
+    const sel = this.quill.getSelection()
     if (!sel) {
       return
     }
-    let [leaf] = this.quill.getLeaf(sel.index)
-    if (!leaf.text || leaf.parent.domNode.localName === "a") {
+    const [leaf] = this.quill.getLeaf(sel.index)
+    if (!leaf.text || leaf.parent.domNode.localName === 'a') {
       return
     }
-    let urlMatch = leaf.text.match(this.options.urlRegularExpression)
+    const urlMatch = leaf.text.match(this.options.urlRegularExpression)
     if (!urlMatch) {
       return
     }
-    let leafIndex = this.quill.getIndex(leaf)
-    let index = leafIndex + urlMatch.index
+    const leafIndex = this.quill.getIndex(leaf)
+    const index = leafIndex + urlMatch.index
 
     this.textToUrl(index, urlMatch[0])
   }
