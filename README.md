@@ -1,6 +1,6 @@
 # quill-magic-url
 
-Checks for URLs during typing and pasting and automatically converts them to links and normalizes the links URL.
+Checks for URLs and mail addresses during typing and pasting and automatically converts them to links and normalizes the links URL.
 
 Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-links](https://github.com/SmallImprovements/quill-auto-links).
 
@@ -63,13 +63,13 @@ const quill = new Quill(editor, {
 
 > Regex used to check for URLs during _typing_.
 
-**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/i`
+**Default:** `/(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i`
 
 **Example with custom Regex**
 
 ```javascript
 magicUrl: {
-  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/
+  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/
 }
 ```
 
@@ -77,13 +77,41 @@ magicUrl: {
 
 > Regex used to check for URLs on _paste_.
 
-**Default:** `/(https?:\/\/|www\.)[\S]+/gi`
+**Default:** `/(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi`
 
 **Example with custom Regex**
 
 ```javascript
 magicUrl: {
-  globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g
+  globalRegularExpression: /(https?:\/\/|www\.|tel:)[\S]+/g
+}
+```
+
+### mailRegularExpression
+
+> Regex used to check for mail addresses during _typing_. Set to `null` to disable conversion of mail addresses.
+
+**Default:** `/([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i`
+
+**Example with custom Regex**
+
+```javascript
+magicUrl: {
+  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i
+}
+```
+
+### globalMailRegularExpression
+
+> Regex used to check for mail addresses on _paste_. Set to `null` to disable conversion of mail addresses.
+
+**Default:** `/([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi`
+
+**Example with custom Regex**
+
+```javascript
+magicUrl: {
+  globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi
 }
 ```
 
@@ -91,7 +119,7 @@ magicUrl: {
 
 > Regex used to check for URLs to be _normalized_.
 
-**Default:** `/(https?:\/\/[\S]+)|(www.[\S]+)/i`
+**Default:** `/(https?:\/\/|www\.)[\S]+/i`
 
 You will most likely want to keep this options default value.
 
