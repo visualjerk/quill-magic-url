@@ -4,6 +4,8 @@ import normalizeUrl from 'normalize-url'
 const defaults = {
   globalRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
   urlRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i,
+  globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi,
+  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i,
   normalizeRegularExpression: /(https?:\/\/|www\.)[\S]+/i,
   normalizeUrlOptions: {
     stripWWW: false
@@ -23,20 +25,33 @@ export default class MagicUrl {
       if (typeof node.data !== 'string') {
         return
       }
-      const matches = node.data.match(this.options.globalRegularExpression)
-      if (matches && matches.length > 0) {
-        const newDelta = new Delta()
-        let str = node.data
-        matches.forEach(match => {
-          const split = str.split(match)
-          const beforeLink = split.shift()
-          newDelta.insert(beforeLink)
-          newDelta.insert(match, {link: this.normalize(match)})
-          str = split.join(match)
-        })
-        newDelta.insert(str)
-        delta.ops = newDelta.ops
-      }
+      const newDelta = new Delta()
+      node.data.split(/(\s+)/).forEach(str => {
+        const urlMatches = str.match(this.options.globalRegularExpression)
+        const mailMatches = str.match(this.options.globalMailRegularExpression)
+        if (urlMatches && urlMatches.length) {
+          urlMatches.forEach(match => {
+            const split = str.split(match)
+            const beforeLink = split.shift()
+            newDelta.insert(beforeLink)
+            newDelta.insert(match, {link: this.normalize(match)})
+            str = split.join(match)
+          })
+          newDelta.insert(str)
+        } else if (mailMatches && mailMatches.length) {
+          mailMatches.forEach(match => {
+            const split = str.split(match)
+            const beforeLink = split.shift()
+            newDelta.insert(beforeLink)
+            newDelta.insert(match, {link: `mailto:${match}`})
+            str = split.join(match)
+          })
+          newDelta.insert(str)
+        } else {
+          newDelta.insert(str)
+        }
+      })
+      delta.ops = newDelta.ops
       return delta
     })
   }
@@ -64,19 +79,25 @@ export default class MagicUrl {
     if (!leaf.text || leaf.parent.domNode.localName === 'a') {
       return
     }
-    const urlMatch = leaf.text.match(this.options.urlRegularExpression)
-    if (!urlMatch) {
-      return
-    }
     const leafIndex = this.quill.getIndex(leaf)
-    const index = leafIndex + urlMatch.index
-
-    this.textToUrl(index, urlMatch[0])
+    const urlMatch = leaf.text.match(this.options.urlRegularExpression)
+    const mailMatch = leaf.text.match(this.options.mailRegularExpression)
+    if (urlMatch) {
+      this.textToUrl(leafIndex + urlMatch.index, urlMatch[0])
+    } else if (mailMatch) {
+      this.textToMail(leafIndex + mailMatch.index, mailMatch[0])
+    }
   }
   textToUrl (index, url) {
     const ops = new Delta()
       .retain(index)
       .retain(url.length, {link: this.normalize(url)})
+    this.quill.updateContents(ops)
+  }
+  textToMail (index, mail) {
+    const ops = new Delta()
+      .retain(index)
+      .retain(mail.length, {link: `mailto:${mail}`})
     this.quill.updateContents(ops)
   }
   normalize (url) {
