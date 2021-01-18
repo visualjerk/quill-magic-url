@@ -48,10 +48,8 @@ const quill = new Quill(editor, {
 const quill = new Quill(editor, {
   modules: {
     magicUrl: {
-      // Regex used to check URLs during typing
-      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/,
-      // Regex used to check URLs on paste
-      globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g,
+      // Custom regex to use for URLs
+      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/
     },
   },
 })
@@ -61,7 +59,7 @@ const quill = new Quill(editor, {
 
 ### urlRegularExpression
 
-> Regex used to check for URLs during _typing_.
+> Regex used to check for URLs when typing or pasting.
 
 **Default:** `/(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i`
 
@@ -73,23 +71,9 @@ magicUrl: {
 }
 ```
 
-### globalRegularExpression
-
-> Regex used to check for URLs on _paste_.
-
-**Default:** `/(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi`
-
-**Example with custom Regex**
-
-```javascript
-magicUrl: {
-  globalRegularExpression: /(https?:\/\/|www\.|tel:)[\S]+/g
-}
-```
-
 ### mailRegularExpression
 
-> Regex used to check for mail addresses during _typing_. Set to `null` to disable conversion of mail addresses.
+> Regex used to check for mail addresses when typing or pasting. Set to `null` to disable conversion of mail addresses.
 
 **Default:** `/([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i`
 
@@ -98,20 +82,6 @@ magicUrl: {
 ```javascript
 magicUrl: {
   mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i
-}
-```
-
-### globalMailRegularExpression
-
-> Regex used to check for mail addresses on _paste_. Set to `null` to disable conversion of mail addresses.
-
-**Default:** `/([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi`
-
-**Example with custom Regex**
-
-```javascript
-magicUrl: {
-  globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi
 }
 ```
 
