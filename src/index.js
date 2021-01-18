@@ -2,9 +2,7 @@ import Delta from 'quill-delta'
 import normalizeUrl from 'normalize-url'
 
 const defaults = {
-  globalRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
   urlRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i,
-  globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi,
   mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i,
   normalizeRegularExpression: /(https?:\/\/|www\.)[\S]+/i,
   normalizeUrlOptions: {
@@ -17,6 +15,8 @@ export default class MagicUrl {
     this.quill = quill
     options = options || {}
     this.options = {...defaults, ...options}
+    this.globalUrlRegularExpression = this.addFlag(this.options.urlRegularExpression, 'g')
+    this.globalMailRegularExpression = this.addFlag(this.options.mailRegularExpression, 'g')
     this.registerTypeListener()
     this.registerPasteListener()
   }
@@ -27,8 +27,8 @@ export default class MagicUrl {
       }
       const newDelta = new Delta()
       node.data.split(/(\s+)/).forEach(str => {
-        const urlMatches = str.match(this.options.globalRegularExpression)
-        const mailMatches = str.match(this.options.globalMailRegularExpression)
+        const urlMatches = str.match(this.globalUrlRegularExpression)
+        const mailMatches = str.match(this.globalMailRegularExpression)
         if (urlMatches && urlMatches.length) {
           urlMatches.forEach(match => {
             const split = str.split(match)
@@ -109,6 +109,13 @@ export default class MagicUrl {
       }
     }
     return url
+  }
+  addFlag (expression, flag) {
+    const validFlags = ['g', 'i', 'm', 'y']
+    if (!flag || !validFlags.includes(flag) || expression.flags.includes(flag)) {
+      return expression
+    }
+    return new RegExp(expression.source, expression.flags + flag);
   }
 }
 
