@@ -14,7 +14,7 @@ You can find a [demo page here](https://visualjerk.github.io/quill-magic-url/).
 
 ```html
 <!-- After quill script includes -->
-<script src="https://unpkg.com/quill-magic-url@2.0.4/dist/index.js"></script>
+<script src="https://unpkg.com/quill-magic-url@3.0.0/dist/index.js"></script>
 ```
 
 ### With NPM
@@ -49,9 +49,9 @@ const quill = new Quill(editor, {
   modules: {
     magicUrl: {
       // Regex used to check URLs during typing
-      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(mailto:[\S]+)|(tel:[\S]+)/,
+      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/,
       // Regex used to check URLs on paste
-      globalRegularExpression: /(https?:\/\/|www\.|mailto:|tel:)[\S]+/g,
+      globalRegularExpression: /(https?:\/\/|www\.|tel:)[\S]+/g,
     },
   },
 })
