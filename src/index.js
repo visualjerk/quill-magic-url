@@ -17,6 +17,8 @@ export default class MagicUrl {
     this.quill = quill
     options = options || {}
     this.options = {...defaults, ...options}
+    this.urlNormalizer = (url) => this.normalize(url)
+    this.mailNormalizer = (mail) => `mailto:${mail}`
     this.registerTypeListener()
     this.registerPasteListener()
   }
@@ -29,27 +31,19 @@ export default class MagicUrl {
       node.data.split(/(\s+)/).forEach(str => {
         const urlMatches = str.match(this.options.globalRegularExpression)
         const mailMatches = str.match(this.options.globalMailRegularExpression)
-        if (urlMatches && urlMatches.length) {
-          urlMatches.forEach(match => {
-            const split = str.split(match)
-            const beforeLink = split.shift()
-            newDelta.insert(beforeLink)
-            newDelta.insert(match, {link: this.normalize(match)})
-            str = split.join(match)
-          })
-          newDelta.insert(str)
-        } else if (mailMatches && mailMatches.length) {
-          mailMatches.forEach(match => {
-            const split = str.split(match)
-            const beforeLink = split.shift()
-            newDelta.insert(beforeLink)
-            newDelta.insert(match, {link: `mailto:${match}`})
-            str = split.join(match)
-          })
-          newDelta.insert(str)
-        } else {
-          newDelta.insert(str)
+        const addMatchToDelta = (match, normalizer) => {
+          const split = str.split(match)
+          const beforeLink = split.shift()
+          newDelta.insert(beforeLink)
+          newDelta.insert(match, {link: normalizer(match)})
+          str = split.join(match)
         }
+        if (urlMatches && urlMatches.length) {
+          urlMatches.forEach(match => addMatchToDelta(match, this.urlNormalizer))
+        } else if (mailMatches && mailMatches.length) {
+          mailMatches.forEach(match => addMatchToDelta(match, this.mailNormalizer))
+        }
+        newDelta.insert(str)
       })
       delta.ops = newDelta.ops
       return delta
@@ -91,13 +85,13 @@ export default class MagicUrl {
   textToUrl (index, url) {
     const ops = new Delta()
       .retain(index)
-      .retain(url.length, {link: this.normalize(url)})
+      .retain(url.length, {link: this.urlNormalizer(url)})
     this.quill.updateContents(ops)
   }
   textToMail (index, mail) {
     const ops = new Delta()
       .retain(index)
-      .retain(mail.length, {link: `mailto:${mail}`})
+      .retain(mail.length, {link: this.mailNormalizer(mail)})
     this.quill.updateContents(ops)
   }
   normalize (url) {
