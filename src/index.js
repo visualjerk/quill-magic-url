@@ -2,9 +2,11 @@ import Delta from 'quill-delta'
 import normalizeUrl from 'normalize-url'
 
 const defaults = {
-  globalRegularExpression: /(https?:\/\/|www\.)[\S]+/gi,
-  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/i,
-  normalizeRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)/i,
+  globalRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
+  urlRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i,
+  globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi,
+  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i,
+  normalizeRegularExpression: /(https?:\/\/|www\.)[\S]+/i,
   normalizeUrlOptions: {
     stripWWW: false
   }
@@ -15,6 +17,8 @@ export default class MagicUrl {
     this.quill = quill
     options = options || {}
     this.options = {...defaults, ...options}
+    this.urlNormalizer = (url) => this.normalize(url)
+    this.mailNormalizer = (mail) => `mailto:${mail}`
     this.registerTypeListener()
     this.registerPasteListener()
   }
@@ -23,32 +27,37 @@ export default class MagicUrl {
       if (typeof node.data !== 'string') {
         return
       }
-      const matches = node.data.match(this.options.globalRegularExpression)
-      if (matches && matches.length > 0) {
-        const newDelta = new Delta()
-        let str = node.data
-        matches.forEach(match => {
+      const newDelta = new Delta()
+      node.data.split(/(\s+)/).forEach(str => {
+        const urlMatches = str.match(this.options.globalRegularExpression)
+        const mailMatches = str.match(this.options.globalMailRegularExpression)
+        const addMatchToDelta = (match, normalizer) => {
           const split = str.split(match)
           const beforeLink = split.shift()
           newDelta.insert(beforeLink)
-          newDelta.insert(match, {link: this.normalize(match)})
+          newDelta.insert(match, {link: normalizer(match)})
           str = split.join(match)
-        })
+        }
+        if (urlMatches && urlMatches.length) {
+          urlMatches.forEach(match => addMatchToDelta(match, this.urlNormalizer))
+        } else if (mailMatches && mailMatches.length) {
+          mailMatches.forEach(match => addMatchToDelta(match, this.mailNormalizer))
+        }
         newDelta.insert(str)
-        delta.ops = newDelta.ops
-      }
+      })
+      delta.ops = newDelta.ops
       return delta
     })
   }
   registerTypeListener () {
     this.quill.on('text-change', (delta) => {
-      let ops = delta.ops
+      const ops = delta.ops
       // Only return true, if last operation includes whitespace inserts
       // Equivalent to listening for enter, tab or space
       if (!ops || ops.length < 1 || ops.length > 2) {
         return
       }
-      let lastOp = ops[ops.length - 1]
+      const lastOp = ops[ops.length - 1]
       if (!lastOp.insert || typeof lastOp.insert !== 'string' || !lastOp.insert.match(/\s/)) {
         return
       }
@@ -56,27 +65,33 @@ export default class MagicUrl {
     })
   }
   checkTextForUrl () {
-    let sel = this.quill.getSelection()
+    const sel = this.quill.getSelection()
     if (!sel) {
       return
     }
-    let [leaf] = this.quill.getLeaf(sel.index)
-    if (!leaf.text || leaf.parent.domNode.localName === "a") {
+    const [leaf] = this.quill.getLeaf(sel.index)
+    if (!leaf.text || leaf.parent.domNode.localName === 'a') {
       return
     }
-    let urlMatch = leaf.text.match(this.options.urlRegularExpression)
-    if (!urlMatch) {
-      return
+    const leafIndex = this.quill.getIndex(leaf)
+    const urlMatch = leaf.text.match(this.options.urlRegularExpression)
+    const mailMatch = leaf.text.match(this.options.mailRegularExpression)
+    if (urlMatch) {
+      this.textToUrl(leafIndex + urlMatch.index, urlMatch[0])
+    } else if (mailMatch) {
+      this.textToMail(leafIndex + mailMatch.index, mailMatch[0])
     }
-    let leafIndex = this.quill.getIndex(leaf)
-    let index = leafIndex + urlMatch.index
-
-    this.textToUrl(index, urlMatch[0])
   }
   textToUrl (index, url) {
     const ops = new Delta()
       .retain(index)
-      .retain(url.length, {link: this.normalize(url)})
+      .retain(url.length, {link: this.urlNormalizer(url)})
+    this.quill.updateContents(ops)
+  }
+  textToMail (index, mail) {
+    const ops = new Delta()
+      .retain(index)
+      .retain(mail.length, {link: this.mailNormalizer(mail)})
     this.quill.updateContents(ops)
   }
   normalize (url) {
