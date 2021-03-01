@@ -136,9 +136,11 @@ describe('MagicUrl', () => {
       })
     })
 
-    test('should parse same url multiple times', () => {
+    test('should parse url instead of mail', () => {
+      // the url is part of an mail and both start at the same index
+      // favor the url
       const node = {
-        data: 'Hello www.example.com world www.hello@example.com !',
+        data: 'Hello www.hello.com@example.com !',
       }
       const delta = { ops: [{ insert: 'Hello www.example.com' }] }
 
@@ -146,13 +148,28 @@ describe('MagicUrl', () => {
         ops: [
           { insert: 'Hello ' },
           {
-            insert: 'www.example.com',
-            attributes: { link: 'http://www.example.com' },
+            insert: 'www.hello.com',
+            attributes: { link: 'http://www.hello.com' },
           },
-          { insert: ' world ' },
+          { insert: '@example.com !' },
+        ],
+      })
+    })
+
+    test('should parse mail instead of url', () => {
+      // the url is part of an mail but starts at a later index
+      // favor the mail
+      const node = {
+        data: 'Hello hello@www.example.com !',
+      }
+      const delta = { ops: [{ insert: 'Hello www.example.com' }] }
+
+      expect(matcherCallback(node, delta)).toEqual({
+        ops: [
+          { insert: 'Hello ' },
           {
-            insert: 'www.hello@example.com',
-            attributes: { link: 'mailto:www.hello@example.com' },
+            insert: 'hello@www.example.com',
+            attributes: { link: 'mailto:hello@www.example.com' },
           },
           { insert: ' !' },
         ],
