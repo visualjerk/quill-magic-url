@@ -59,10 +59,10 @@ export default class MagicUrl {
           }
           mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
         }
-        if (urlResult === null && mailResult === null) {
-          const tail = node.data.substring(index)
-          newDelta.insert(tail);
-        }
+      }
+      if (index > 0) {
+        const tail = node.data.substring(index)
+        newDelta.insert(tail);
         delta.ops = newDelta.ops
       }
       return delta
