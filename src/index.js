@@ -27,25 +27,44 @@ export default class MagicUrl {
       if (typeof node.data !== 'string') {
         return
       }
+      const urlRegExp = this.options.globalRegularExpression
+      const mailRegExp = this.options.globalMailRegularExpression
+      urlRegExp.lastIndex = 0
+      mailRegExp.lastIndex = 0
       const newDelta = new Delta()
-      node.data.split(/(\s+)/).forEach(str => {
-        const urlMatches = str.match(this.options.globalRegularExpression)
-        const mailMatches = str.match(this.options.globalMailRegularExpression)
-        const addMatchToDelta = (match, normalizer) => {
-          const split = str.split(match)
-          const beforeLink = split.shift()
-          newDelta.insert(beforeLink)
-          newDelta.insert(match, {link: normalizer(match)})
-          str = split.join(match)
+      let index = 0
+      let urlResult = urlRegExp.exec(node.data)
+      let mailResult = mailRegExp.exec(node.data)
+      const handleMatch = (result, regExp, normalizer) => {
+        const head = node.data.substring(index, result.index)
+        newDelta.insert(head);
+        const match = result[0];
+        newDelta.insert(match, {link: normalizer(match)})
+        index = regExp.lastIndex
+        return regExp.exec(node.data)
+      }
+      while(urlResult !== null || mailResult !== null) {
+        if (urlResult === null) {
+          mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
+        } else if (mailResult === null) {
+          urlResult = handleMatch(urlResult, urlRegExp, this.urlNormalizer)
+        } else if (mailResult.index <= urlResult.index) {
+          while (urlResult !== null && urlResult.index < mailRegExp.lastIndex) {
+            urlResult = urlRegExp.exec(node.data)
+          }
+          mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
+        } else {
+          while (mailResult !== null && mailResult.index < urlRegExp.lastIndex) {
+            mailResult = mailRegExp.exec(node.data)
+          }
+          urlResult = handleMatch(urlResult, urlRegExp, this.urlNormalizer)
         }
-        if (urlMatches && urlMatches.length) {
-          urlMatches.forEach(match => addMatchToDelta(match, this.urlNormalizer))
-        } else if (mailMatches && mailMatches.length) {
-          mailMatches.forEach(match => addMatchToDelta(match, this.mailNormalizer))
-        }
-        newDelta.insert(str)
-      })
-      delta.ops = newDelta.ops
+      }
+      if (index > 0) {
+        const tail = node.data.substring(index)
+        newDelta.insert(tail);
+        delta.ops = newDelta.ops
+      }
       return delta
     })
   }
