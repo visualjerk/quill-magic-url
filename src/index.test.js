@@ -137,39 +137,39 @@ describe('MagicUrl', () => {
     })
 
     test('should parse url instead of mail', () => {
-      // the url is part of an mail and both start at the same index
+      // the email is part of the url but starts at a later index
       // favor the url
       const node = {
-        data: 'Hello www.hello.com@example.com !',
+        data: 'Hello www.example.com/?user=user@example.com !',
       }
-      const delta = { ops: [{ insert: 'Hello www.example.com' }] }
+      const delta = { ops: [{ insert: 'Hello www.example.com/?user=user@example.com !' }] }
 
       expect(matcherCallback(node, delta)).toEqual({
         ops: [
           { insert: 'Hello ' },
           {
-            insert: 'www.hello.com',
-            attributes: { link: 'http://www.hello.com' },
+            insert: 'www.example.com/?user=user@example.com',
+            attributes: { link: 'http://www.example.com/?user=user%40example.com' },
           },
-          { insert: '@example.com !' },
+          { insert: ' !' },
         ],
       })
     })
 
     test('should parse mail instead of url', () => {
-      // the url is part of an mail but starts at a later index
+      // the url is part of the mail and both start at the same index
       // favor the mail
       const node = {
-        data: 'Hello hello@www.example.com !',
+        data: 'Hello www.hello.com@example.com !',
       }
-      const delta = { ops: [{ insert: 'Hello www.example.com' }] }
+      const delta = { ops: [{ insert: 'Hello www.hello.com@example.com !' }] }
 
       expect(matcherCallback(node, delta)).toEqual({
         ops: [
           { insert: 'Hello ' },
           {
-            insert: 'hello@www.example.com',
-            attributes: { link: 'mailto:hello@www.example.com' },
+            insert: 'www.hello.com@example.com',
+            attributes: { link: 'mailto:www.hello.com@example.com' },
           },
           { insert: ' !' },
         ],

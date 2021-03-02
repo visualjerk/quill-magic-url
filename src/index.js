@@ -48,16 +48,16 @@ export default class MagicUrl {
           mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
         } else if (mailResult === null) {
           urlResult = handleMatch(urlResult, urlRegExp, this.urlNormalizer)
-        } else if (urlResult.index <= mailResult.index) {
-          while (mailResult !== null && mailResult.index < urlRegExp.lastIndex) {
-            mailResult = mailRegExp.exec(node.data)
-          }
-          urlResult = handleMatch(urlResult, urlRegExp, this.urlNormalizer)
-        } else {
+        } else if (mailResult.index <= urlResult.index) {
           while (urlResult !== null && urlResult.index < mailRegExp.lastIndex) {
             urlResult = urlRegExp.exec(node.data)
           }
           mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
+        } else {
+          while (mailResult !== null && mailResult.index < urlRegExp.lastIndex) {
+            mailResult = mailRegExp.exec(node.data)
+          }
+          urlResult = handleMatch(urlResult, urlRegExp, this.urlNormalizer)
         }
       }
       if (index > 0) {
