@@ -125,6 +125,6 @@ export default class MagicUrl {
   }
 }
 
-if (window.Quill) {
+if (typeof window !== 'undefined' && window.Quill) {
   window.Quill.register('modules/magicUrl', MagicUrl);
 }
