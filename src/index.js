@@ -8,21 +8,21 @@ const defaults = {
   mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i,
   normalizeRegularExpression: /(https?:\/\/|www\.)[\S]+/i,
   normalizeUrlOptions: {
-    stripWWW: false
-  }
+    stripWWW: false,
+  },
 }
 
 export default class MagicUrl {
-  constructor (quill, options) {
+  constructor(quill, options) {
     this.quill = quill
     options = options || {}
-    this.options = {...defaults, ...options}
+    this.options = { ...defaults, ...options }
     this.urlNormalizer = (url) => this.normalize(url)
     this.mailNormalizer = (mail) => `mailto:${mail}`
     this.registerTypeListener()
     this.registerPasteListener()
   }
-  registerPasteListener () {
+  registerPasteListener() {
     this.quill.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
       if (typeof node.data !== 'string') {
         return
@@ -37,13 +37,13 @@ export default class MagicUrl {
       let mailResult = mailRegExp.exec(node.data)
       const handleMatch = (result, regExp, normalizer) => {
         const head = node.data.substring(index, result.index)
-        newDelta.insert(head);
-        const match = result[0];
-        newDelta.insert(match, {link: normalizer(match)})
+        newDelta.insert(head)
+        const match = result[0]
+        newDelta.insert(match, { link: normalizer(match) })
         index = regExp.lastIndex
         return regExp.exec(node.data)
       }
-      while(urlResult !== null || mailResult !== null) {
+      while (urlResult !== null || mailResult !== null) {
         if (urlResult === null) {
           mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
         } else if (mailResult === null) {
@@ -54,7 +54,10 @@ export default class MagicUrl {
           }
           mailResult = handleMatch(mailResult, mailRegExp, this.mailNormalizer)
         } else {
-          while (mailResult !== null && mailResult.index < urlRegExp.lastIndex) {
+          while (
+            mailResult !== null &&
+            mailResult.index < urlRegExp.lastIndex
+          ) {
             mailResult = mailRegExp.exec(node.data)
           }
           urlResult = handleMatch(urlResult, urlRegExp, this.urlNormalizer)
@@ -62,13 +65,13 @@ export default class MagicUrl {
       }
       if (index > 0) {
         const tail = node.data.substring(index)
-        newDelta.insert(tail);
+        newDelta.insert(tail)
         delta.ops = newDelta.ops
       }
       return delta
     })
   }
-  registerTypeListener () {
+  registerTypeListener() {
     this.quill.on('text-change', (delta) => {
       const ops = delta.ops
       // Only return true, if last operation includes whitespace inserts
@@ -77,13 +80,17 @@ export default class MagicUrl {
         return
       }
       const lastOp = ops[ops.length - 1]
-      if (!lastOp.insert || typeof lastOp.insert !== 'string' || !lastOp.insert.match(/\s/)) {
+      if (
+        !lastOp.insert ||
+        typeof lastOp.insert !== 'string' ||
+        !lastOp.insert.match(/\s/)
+      ) {
         return
       }
       this.checkTextForUrl()
     })
   }
-  checkTextForUrl () {
+  checkTextForUrl() {
     const sel = this.quill.getSelection()
     if (!sel) {
       return
@@ -101,19 +108,19 @@ export default class MagicUrl {
       this.textToMail(leafIndex + mailMatch.index, mailMatch[0])
     }
   }
-  textToUrl (index, url) {
+  textToUrl(index, url) {
     const ops = new Delta()
       .retain(index)
-      .retain(url.length, {link: this.urlNormalizer(url)})
+      .retain(url.length, { link: this.urlNormalizer(url) })
     this.quill.updateContents(ops)
   }
-  textToMail (index, mail) {
+  textToMail(index, mail) {
     const ops = new Delta()
       .retain(index)
-      .retain(mail.length, {link: this.mailNormalizer(mail)})
+      .retain(mail.length, { link: this.mailNormalizer(mail) })
     this.quill.updateContents(ops)
   }
-  normalize (url) {
+  normalize(url) {
     if (this.options.normalizeRegularExpression.test(url)) {
       try {
         return normalizeUrl(url, this.options.normalizeUrlOptions)
@@ -125,6 +132,6 @@ export default class MagicUrl {
   }
 }
 
-if (typeof window !== 'undefined' && window.Quill) {
-  window.Quill.register('modules/magicUrl', MagicUrl);
+if (window != null && window.Quill) {
+  window.Quill.register('modules/magicUrl', MagicUrl)
 }
