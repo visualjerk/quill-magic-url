@@ -1,5 +1,9 @@
 # quill-magic-url
 
+![tests](https://github.com/visualjerk/quill-magic-url/actions/workflows/tests.yml/badge.svg)
+
+![publish](https://github.com/visualjerk/quill-magic-url/actions/workflows/publish.yml/badge.svg)
+
 Checks for URLs and mail addresses during typing and pasting and automatically converts them to links and normalizes the links URL.
 
 Thanks to [@LFDM](https://github.com/LFDM) for the groundwork with [quill-auto-links](https://github.com/SmallImprovements/quill-auto-links).

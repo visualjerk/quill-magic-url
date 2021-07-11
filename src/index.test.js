@@ -142,14 +142,18 @@ describe('MagicUrl', () => {
       const node = {
         data: 'Hello www.example.com/?user=user@example.com !',
       }
-      const delta = { ops: [{ insert: 'Hello www.example.com/?user=user@example.com !' }] }
+      const delta = {
+        ops: [{ insert: 'Hello www.example.com/?user=user@example.com !' }],
+      }
 
       expect(matcherCallback(node, delta)).toEqual({
         ops: [
           { insert: 'Hello ' },
           {
             insert: 'www.example.com/?user=user@example.com',
-            attributes: { link: 'http://www.example.com/?user=user%40example.com' },
+            attributes: {
+              link: 'http://www.example.com/?user=user%40example.com',
+            },
           },
           { insert: ' !' },
         ],
