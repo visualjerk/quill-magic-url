@@ -25,7 +25,7 @@ describe('quill-magic-url', () => {
     editor.should('contain.html', `${text ? text : url}</a>`)
   }
 
-  describe('Creates link for url on typing', () => {
+  describe('Typing', () => {
     it('triggered by blank space', () => {
       type('http://test.de ')
       shouldContainLink('http://test.de')
@@ -70,12 +70,12 @@ describe('quill-magic-url', () => {
         'i want to be preserved http://test.de my little pony www.google.com look a mail peter@google.com bam!'
       )
       shouldContain(
-        'i want to be preserved <a href="http://test.de" target="_blank">http://test.de</a> my little pony <a href="http://www.google.com" target="_blank">www.google.com</a> look a mail <a href="mailto:peter@google.com" target="_blank">peter@google.com</a> bam!'
+        '<p>i want to be preserved <a href="http://test.de" target="_blank">http://test.de</a> my little pony <a href="http://www.google.com" target="_blank">www.google.com</a> look a mail <a href="mailto:peter@google.com" target="_blank">peter@google.com</a> bam!</p>'
       )
     })
   })
 
-  describe('Creates link for url on paste', () => {
+  describe('Paste', () => {
     it('for single url', () => {
       paste('http://test.de')
       shouldContainLink('http://test.de')
