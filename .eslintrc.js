@@ -3,10 +3,11 @@ module.exports = {
   parser: 'babel-eslint',
   env: {
     browser: true,
-    node: true
+    node: true,
+    'jest/globals': true,
   },
   extends: 'standard',
-  // add your custom rules here
   rules: {},
-  globals: {}
+  globals: {},
+  plugins: ['jest'],
 }
