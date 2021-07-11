@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,3 +17,15 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+          with:
+            build: npm run build
+            start: npm run dev
+            wait-on: 'http://localhost:8080'
