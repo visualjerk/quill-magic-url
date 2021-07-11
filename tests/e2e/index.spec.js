@@ -1,27 +1,6 @@
-Cypress.Commands.add(
-  'paste',
-  { prevSubject: true },
-  function (subject, pasteOptions) {
-    const { payload, type } = pasteOptions
-    // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer
-    const clipboardData = new DataTransfer()
-    clipboardData.setData(type, payload)
-    // https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
-    const pasteEvent = new ClipboardEvent('paste', {
-      bubbles: true,
-      cancelable: true,
-      clipboardData,
-    })
-    subject[0].dispatchEvent(pasteEvent)
-
-    return subject
-  }
-)
-
 describe('quill-magic-url', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080')
-    cy.get('.ql-editor').click().type('t{backspace}')
   })
 
   function type(text) {
@@ -33,6 +12,11 @@ describe('quill-magic-url', () => {
     cy.window().then((win) => {
       win.quill.clipboard.dangerouslyPasteHTML(text)
     })
+  }
+
+  function shouldContain(text) {
+    const editor = cy.get('.ql-editor')
+    editor.should('contain.html', text)
   }
 
   function shouldContainLink(url, text) {
@@ -80,6 +64,15 @@ describe('quill-magic-url', () => {
       shouldContainLink('https://google.de')
       shouldContainLink('http://www.test.de', 'www.test.de')
     })
+
+    it('preserves normal text', () => {
+      type(
+        'i want to be preserved http://test.de my little pony www.google.com look a mail peter@google.com bam!'
+      )
+      shouldContain(
+        'i want to be preserved <a href="http://test.de" target="_blank">http://test.de</a> my little pony <a href="http://www.google.com" target="_blank">www.google.com</a> look a mail <a href="mailto:peter@google.com" target="_blank">peter@google.com</a> bam!'
+      )
+    })
   })
 
   describe('Creates link for url on paste', () => {
@@ -106,6 +99,15 @@ describe('quill-magic-url', () => {
       shouldContainLink('mailto:test@test.de', 'test@test.de')
       shouldContainLink('https://google.de')
       shouldContainLink('http://www.test.de', 'www.test.de')
+    })
+
+    it('preserves normal text', () => {
+      paste(
+        'i want to be preserved http://test.de my little pony www.google.com look a mail peter@google.com bam!'
+      )
+      shouldContain(
+        'i want to be preserved <a href="http://test.de" target="_blank">http://test.de</a> my little pony <a href="http://www.google.com" target="_blank">www.google.com</a> look a mail <a href="mailto:peter@google.com" target="_blank">peter@google.com</a> bam!'
+      )
     })
   })
 })
