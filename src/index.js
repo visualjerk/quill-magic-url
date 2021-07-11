@@ -2,7 +2,8 @@ import Delta from 'quill-delta'
 import normalizeUrl from 'normalize-url'
 
 const defaults = {
-  globalRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
+  globalRegularExpression:
+    /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
   urlRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i,
   globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi,
   mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i,
@@ -24,6 +25,7 @@ export default class MagicUrl {
   }
   registerPasteListener() {
     this.quill.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
+      console.log('paste')
       if (typeof node.data !== 'string') {
         return
       }

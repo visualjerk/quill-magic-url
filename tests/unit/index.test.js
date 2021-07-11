@@ -1,4 +1,4 @@
-import MagicUrl from './index'
+import MagicUrl from '../../src/index'
 
 describe('MagicUrl', () => {
   describe('PasteListener', () => {
