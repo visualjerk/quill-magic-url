@@ -25,7 +25,6 @@ export default class MagicUrl {
   }
   registerPasteListener() {
     this.quill.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
-      console.log('paste')
       if (typeof node.data !== 'string') {
         return
       }

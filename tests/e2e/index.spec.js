@@ -22,9 +22,6 @@ describe('quill-magic-url', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080')
     cy.get('.ql-editor').click().type('t{backspace}')
-    cy.document().then((doc) => {
-      console.log(doc.activeElement)
-    })
   })
 
   function type(text) {
@@ -34,7 +31,6 @@ describe('quill-magic-url', () => {
 
   function paste(text) {
     cy.window().then((win) => {
-      console.log(win.quill.clipboard)
       win.quill.clipboard.dangerouslyPasteHTML(text)
     })
   }
