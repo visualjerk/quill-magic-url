@@ -100,6 +100,9 @@ export default class MagicUrl {
     if (!leaf.text || leaf.parent.domNode.localName === 'a') {
       return
     }
+    if (leaf.text.match(/\s\s$/)) {
+      return
+    }
     const leafIndex = this.quill.getIndex(leaf)
     const urlMatch = leaf.text.match(this.options.urlRegularExpression)
     const mailMatch = leaf.text.match(this.options.mailRegularExpression)

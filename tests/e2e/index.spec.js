@@ -73,6 +73,24 @@ describe('quill-magic-url', () => {
         '<p>i want to be preserved <a href="http://test.de" target="_blank">http://test.de</a> my little pony <a href="http://www.google.com" target="_blank">www.google.com</a> look a mail <a href="mailto:peter@google.com" target="_blank">peter@google.com</a> bam!</p>'
       )
     })
+
+    it.only('does not trigger on double blank space', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('.ql-editor').click('bottomRight')
+      type(' ')
+      shouldContain('<p>http://test.de  </p>')
+    })
+
+    it.only('does not trigger on wrong link', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('.ql-editor').click('bottomRight')
+      type('http://google.com ')
+      shouldContain(
+        '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a> </p>'
+      )
+    })
   })
 
   describe('Paste', () => {
