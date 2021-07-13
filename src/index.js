@@ -89,21 +89,25 @@ export default class MagicUrl {
       ) {
         return
       }
-      this.checkTextForUrl()
+      this.checkTextForUrl(lastOp.insert.match(/ |\t/))
     })
   }
   registerBlurListener() {
     this.quill.root.addEventListener('blur', () => {
-      this.checkTextForUrl(/\s$/)
+      this.checkTextForUrl()
     })
   }
-  checkTextForUrl(bailOutEndingRegex = /\s\s$/) {
+  checkTextForUrl(triggeredByInlineWhitespace = false) {
     const sel = this.quill.getSelection()
     if (!sel) {
       return
     }
     const [leaf] = this.quill.getLeaf(sel.index)
     const leafIndex = this.quill.getIndex(leaf)
+
+    if (!leaf.text) {
+      return
+    }
 
     // We only care about the leaf until the current cursor position
     const relevantLength = sel.index - leafIndex
@@ -112,9 +116,11 @@ export default class MagicUrl {
       return
     }
 
+    const bailOutEndingRegex = triggeredByInlineWhitespace ? /\s\s$/ : /\s$/
     if (text.match(bailOutEndingRegex)) {
       return
     }
+
     const urlMatch = text.match(this.options.urlRegularExpression)
     const mailMatch = text.match(this.options.mailRegularExpression)
     if (urlMatch) {

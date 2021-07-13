@@ -46,6 +46,12 @@ describe('quill-magic-url', () => {
       shouldContainLink('http://test.de')
     })
 
+    it('does not throw on blur when empty', () => {
+      cy.get('@editor').focus()
+      cy.get('@editor').blur()
+      shouldContain('<p><br></p>')
+    })
+
     it('for multiple urls', () => {
       type('http://test.de https://google.de ')
       shouldContainLink('http://test.de')
@@ -89,6 +95,16 @@ describe('quill-magic-url', () => {
       it('on double blank space', () => {
         type(' ')
         shouldContain('<p>http://test.de  </p>')
+      })
+
+      it('on blank space and enter', () => {
+        type('{enter}')
+        shouldContain('<p>http://test.de </p><p><br></p>')
+      })
+
+      it('on blank space in new line', () => {
+        type('{enter}next ')
+        shouldContain('<p>http://test.de </p><p>next </p>')
       })
 
       it('on blank space after blur', () => {
