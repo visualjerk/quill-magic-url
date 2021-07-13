@@ -1,4 +1,7 @@
 {
   "integrationFolder": "tests/e2e",
-  "testFiles": "**/*.spec.js"
+  "testFiles": "**/*.spec.js",
+  "fixturesFolder": false,
+  "pluginsFile": false,
+  "supportFile": false
 }
