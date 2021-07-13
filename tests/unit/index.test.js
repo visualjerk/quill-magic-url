@@ -16,6 +16,9 @@ describe('MagicUrl', () => {
         getLeaf: () => {},
         getIndex: () => {},
         updateContents: () => {},
+        root: {
+          addEventListener: () => null,
+        },
       }
 
       new MagicUrl(quillMock)

@@ -24,7 +24,7 @@ describe('quill-magic-url', () => {
     editor.should('contain.html', `${text ? text : url}</a>`)
   }
 
-  describe('Typing', () => {
+  describe('typing', () => {
     it('triggered by blank space', () => {
       type('http://test.de ')
       shouldContainLink('http://test.de')
@@ -37,6 +37,12 @@ describe('quill-magic-url', () => {
 
     it('triggered by tab', () => {
       type('http://test.de\t')
+      shouldContainLink('http://test.de')
+    })
+
+    it('triggered by blur', () => {
+      type('http://test.de')
+      cy.get('@editor').blur()
       shouldContainLink('http://test.de')
     })
 
@@ -73,50 +79,88 @@ describe('quill-magic-url', () => {
       )
     })
 
-    it('does not trigger on double blank space', () => {
-      type('http://test.de {leftarrow}{leftarrow}')
-      cy.get('.ql-remove').click()
-      cy.get('@editor').click('bottomRight')
-      type(' ')
-      shouldContain('<p>http://test.de  </p>')
+    describe('does not trigger', () => {
+      beforeEach(() => {
+        type('http://test.de {leftarrow}{leftarrow}')
+        cy.get('.ql-remove').click()
+        cy.get('@editor').click('bottomRight')
+      })
+
+      it('on double blank space', () => {
+        type(' ')
+        shouldContain('<p>http://test.de  </p>')
+      })
+
+      it('on blank space after blur', () => {
+        cy.get('@editor').blur()
+        shouldContain('<p>http://test.de </p>')
+      })
     })
 
-    it('does trigger on first url', () => {
-      type('http://test.de {leftarrow}{leftarrow}')
-      cy.get('.ql-remove').click()
-      cy.get('@editor').click('bottomRight')
-      type('www.google.com')
-      // Move to end of first url
-      type(`{movetostart}${'{rightarrow}'.repeat(14)} `)
-      shouldContain(
-        '<p><a href="http://test.de" target="_blank">http://test.de</a>  www.google.com</p>'
-      )
+    describe('converts first url', () => {
+      beforeEach(() => {
+        type('http://test.de {leftarrow}{leftarrow}')
+        cy.get('.ql-remove').click()
+        cy.get('@editor').click('bottomRight')
+        type('www.google.com')
+        // Move to end of first url
+        type(`{movetostart}${'{rightarrow}'.repeat(14)}`)
+      })
+
+      it('on blank space', () => {
+        type(' ')
+        shouldContain(
+          '<p><a href="http://test.de" target="_blank">http://test.de</a>  www.google.com</p>'
+        )
+      })
+
+      it('on enter', () => {
+        type('{enter}')
+        shouldContain(
+          '<p><a href="http://test.de" target="_blank">http://test.de</a></p><p> www.google.com</p>'
+        )
+      })
+
+      it('on blur', () => {
+        cy.get('@editor').blur()
+        shouldContain(
+          '<p><a href="http://test.de" target="_blank">http://test.de</a> www.google.com</p>'
+        )
+      })
     })
 
-    it('does trigger on second url', () => {
-      type('http://test.de {leftarrow}{leftarrow}')
-      cy.get('.ql-remove').click()
-      cy.get('@editor').click('bottomRight')
-      type('www.google.com ')
-      shouldContain(
-        '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a> </p>'
-      )
-    })
+    describe('converts second url', () => {
+      beforeEach(() => {
+        type('http://test.de {leftarrow}{leftarrow}')
+        cy.get('.ql-remove').click()
+        cy.get('@editor').click('bottomRight')
+        type('www.google.com')
+      })
 
-    it('does trigger on first url with enter', () => {
-      type('http://test.de {leftarrow}{leftarrow}')
-      cy.get('.ql-remove').click()
-      cy.get('@editor').click('bottomRight')
-      type('www.google.com')
-      // Move to end of first url
-      type(`{movetostart}${'{rightarrow}'.repeat(14)}{enter}`)
-      shouldContain(
-        '<p><a href="http://test.de" target="_blank">http://test.de</a></p><p> www.google.com</p>'
-      )
+      it('on blank space', () => {
+        type(' ')
+        shouldContain(
+          '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a> </p>'
+        )
+      })
+
+      it('on enter', () => {
+        type('{enter}')
+        shouldContain(
+          '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a></p><p><br></p>'
+        )
+      })
+
+      it('on blur', () => {
+        cy.get('@editor').blur()
+        shouldContain(
+          '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a></p>'
+        )
+      })
     })
   })
 
-  describe('Paste', () => {
+  describe('paste', () => {
     it('for single url', () => {
       paste('http://test.de')
       shouldContainLink('http://test.de')
