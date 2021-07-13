@@ -1,11 +1,11 @@
 describe('quill-magic-url', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080')
+    cy.get('.ql-editor').as('editor')
   })
 
   function type(text) {
-    const editor = cy.get('.ql-editor')
-    editor.type(text)
+    cy.get('@editor').type(text)
   }
 
   function paste(text) {
@@ -15,12 +15,11 @@ describe('quill-magic-url', () => {
   }
 
   function shouldContain(text) {
-    const editor = cy.get('.ql-editor')
-    editor.should('contain.html', text)
+    cy.get('@editor').should('contain.html', text)
   }
 
   function shouldContainLink(url, text) {
-    const editor = cy.get('.ql-editor')
+    const editor = cy.get('@editor')
     editor.should('contain.html', `<a href="${url}"`)
     editor.should('contain.html', `${text ? text : url}</a>`)
   }
@@ -77,7 +76,7 @@ describe('quill-magic-url', () => {
     it('does not trigger on double blank space', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
-      cy.get('.ql-editor').click('bottomRight')
+      cy.get('@editor').click('bottomRight')
       type(' ')
       shouldContain('<p>http://test.de  </p>')
     })
@@ -85,7 +84,7 @@ describe('quill-magic-url', () => {
     it('does trigger on first url', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
-      cy.get('.ql-editor').click('bottomRight')
+      cy.get('@editor').click('bottomRight')
       type('www.google.com')
       // Move to end of first url
       type(`{movetostart}${'{rightarrow}'.repeat(14)} `)
@@ -97,7 +96,7 @@ describe('quill-magic-url', () => {
     it('does trigger on second url', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
-      cy.get('.ql-editor').click('bottomRight')
+      cy.get('@editor').click('bottomRight')
       type('www.google.com ')
       shouldContain(
         '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a> </p>'
@@ -107,7 +106,7 @@ describe('quill-magic-url', () => {
     it('does trigger on first url with enter', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
-      cy.get('.ql-editor').click('bottomRight')
+      cy.get('@editor').click('bottomRight')
       type('www.google.com')
       // Move to end of first url
       type(`{movetostart}${'{rightarrow}'.repeat(14)}{enter}`)
