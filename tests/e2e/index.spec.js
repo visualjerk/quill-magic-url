@@ -40,6 +40,12 @@ describe('quill-magic-url', () => {
       shouldContainLink('http://test.de')
     })
 
+    it('triggered by blur', () => {
+      type('http://test.de')
+      cy.get('@editor').blur()
+      shouldContainLink('http://test.de')
+    })
+
     it('for multiple urls', () => {
       type('http://test.de https://google.de ')
       shouldContainLink('http://test.de')
@@ -81,6 +87,14 @@ describe('quill-magic-url', () => {
       shouldContain('<p>http://test.de  </p>')
     })
 
+    it('does not trigger on double blank space after blur', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('@editor').click('bottomRight')
+      cy.get('@editor').blur()
+      shouldContain('<p>http://test.de </p>')
+    })
+
     it('does trigger on first url', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
@@ -90,6 +104,31 @@ describe('quill-magic-url', () => {
       type(`{movetostart}${'{rightarrow}'.repeat(14)} `)
       shouldContain(
         '<p><a href="http://test.de" target="_blank">http://test.de</a>  www.google.com</p>'
+      )
+    })
+
+    it('does trigger on first url with enter', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('@editor').click('bottomRight')
+      type('www.google.com')
+      // Move to end of first url
+      type(`{movetostart}${'{rightarrow}'.repeat(14)}{enter}`)
+      shouldContain(
+        '<p><a href="http://test.de" target="_blank">http://test.de</a></p><p> www.google.com</p>'
+      )
+    })
+
+    it('does trigger on first url after blur', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('@editor').click('bottomRight')
+      type('www.google.com')
+      // Move to end of first url
+      type(`{movetostart}${'{rightarrow}'.repeat(14)}`)
+      cy.get('@editor').blur()
+      shouldContain(
+        '<p><a href="http://test.de" target="_blank">http://test.de</a> www.google.com</p>'
       )
     })
 
@@ -103,15 +142,14 @@ describe('quill-magic-url', () => {
       )
     })
 
-    it('does trigger on first url with enter', () => {
+    it('does trigger on second url after blur', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
       cy.get('@editor').click('bottomRight')
       type('www.google.com')
-      // Move to end of first url
-      type(`{movetostart}${'{rightarrow}'.repeat(14)}{enter}`)
+      cy.get('@editor').blur()
       shouldContain(
-        '<p><a href="http://test.de" target="_blank">http://test.de</a></p><p> www.google.com</p>'
+        '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a></p>'
       )
     })
   })

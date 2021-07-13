@@ -22,6 +22,7 @@ export default class MagicUrl {
     this.mailNormalizer = (mail) => `mailto:${mail}`
     this.registerTypeListener()
     this.registerPasteListener()
+    this.registerBlurListener()
   }
   registerPasteListener() {
     this.quill.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
@@ -91,7 +92,12 @@ export default class MagicUrl {
       this.checkTextForUrl()
     })
   }
-  checkTextForUrl() {
+  registerBlurListener() {
+    this.quill.root.addEventListener('blur', () => {
+      this.checkTextForUrl(/\s$/)
+    })
+  }
+  checkTextForUrl(bailOutEndingRegex = /\s\s$/) {
     const sel = this.quill.getSelection()
     if (!sel) {
       return
@@ -106,8 +112,7 @@ export default class MagicUrl {
       return
     }
 
-    // Do not trigger on two whitespaces
-    if (text.match(/\s\s$/)) {
+    if (text.match(bailOutEndingRegex)) {
       return
     }
     const urlMatch = text.match(this.options.urlRegularExpression)
