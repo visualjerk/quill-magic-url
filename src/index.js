@@ -4,9 +4,9 @@ import normalizeUrl from 'normalize-url'
 const defaults = {
   globalRegularExpression:
     /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
-  urlRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i,
+  urlRegularExpression: /(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi,
   globalMailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi,
-  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i,
+  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi,
   normalizeRegularExpression: /(https?:\/\/|www\.)[\S]+/i,
   normalizeUrlOptions: {
     stripWWW: false,
@@ -97,19 +97,29 @@ export default class MagicUrl {
       return
     }
     const [leaf] = this.quill.getLeaf(sel.index)
-    if (!leaf.text || leaf.parent.domNode.localName === 'a') {
-      return
-    }
-    if (leaf.text.match(/\s\s$/)) {
-      return
-    }
     const leafIndex = this.quill.getIndex(leaf)
-    const urlMatch = leaf.text.match(this.options.urlRegularExpression)
-    const mailMatch = leaf.text.match(this.options.mailRegularExpression)
+
+    // We only care about the leaf until the current cursor position
+    const relevantLength = sel.index - leafIndex
+    const text = leaf.text.slice(0, relevantLength)
+    if (!text || leaf.parent.domNode.localName === 'a') {
+      return
+    }
+
+    // Do not trigger on two whitespaces
+    if (text.match(/\s\s$/)) {
+      return
+    }
+    const urlMatch = text.match(this.options.urlRegularExpression)
+    const mailMatch = text.match(this.options.mailRegularExpression)
     if (urlMatch) {
-      this.textToUrl(leafIndex + urlMatch.index, urlMatch[0])
+      const match = urlMatch.pop()
+      const matchIndex = text.lastIndexOf(match)
+      this.textToUrl(leafIndex + matchIndex, match.trim())
     } else if (mailMatch) {
-      this.textToMail(leafIndex + mailMatch.index, mailMatch[0])
+      const match = mailMatch.pop()
+      const matchIndex = text.lastIndexOf(match)
+      this.textToMail(leafIndex + matchIndex, match.trim())
     }
   }
   textToUrl(index, url) {

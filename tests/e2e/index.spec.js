@@ -74,7 +74,7 @@ describe('quill-magic-url', () => {
       )
     })
 
-    it.only('does not trigger on double blank space', () => {
+    it('does not trigger on double blank space', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
       cy.get('.ql-editor').click('bottomRight')
@@ -82,13 +82,37 @@ describe('quill-magic-url', () => {
       shouldContain('<p>http://test.de  </p>')
     })
 
-    it.only('does not trigger on wrong link', () => {
+    it('does trigger on first url', () => {
       type('http://test.de {leftarrow}{leftarrow}')
       cy.get('.ql-remove').click()
       cy.get('.ql-editor').click('bottomRight')
-      type('http://google.com ')
+      type('www.google.com')
+      // Move to end of first url
+      type(`{movetostart}${'{rightarrow}'.repeat(14)} `)
+      shouldContain(
+        '<p><a href="http://test.de" target="_blank">http://test.de</a>  www.google.com</p>'
+      )
+    })
+
+    it('does trigger on second url', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('.ql-editor').click('bottomRight')
+      type('www.google.com ')
       shouldContain(
         '<p>http://test.de <a href="http://www.google.com" target="_blank">www.google.com</a> </p>'
+      )
+    })
+
+    it('does trigger on first url with enter', () => {
+      type('http://test.de {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('.ql-editor').click('bottomRight')
+      type('www.google.com')
+      // Move to end of first url
+      type(`{movetostart}${'{rightarrow}'.repeat(14)}{enter}`)
+      shouldContain(
+        '<p><a href="http://test.de" target="_blank">http://test.de</a></p><p> www.google.com</p>'
       )
     })
   })

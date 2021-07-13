@@ -51,7 +51,7 @@ const quill = new Quill(editor, {
   modules: {
     magicUrl: {
       // Regex used to check URLs during typing
-      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/,
+      urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/g,
       // Regex used to check URLs on paste
       globalRegularExpression: /(https?:\/\/|www\.|tel:)[\S]+/g,
     },
@@ -65,13 +65,13 @@ const quill = new Quill(editor, {
 
 > Regex used to check for URLs during _typing_.
 
-**Default:** `/(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/i`
+**Default:** `/(https?:\/\/|www\.)[\w-\.]+\.[\w-\.]+(\/([\S]+)?)?/gi`
 
 **Example with custom Regex**
 
 ```javascript
 magicUrl: {
-  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/
+  urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/g
 }
 ```
 
@@ -93,13 +93,13 @@ magicUrl: {
 
 > Regex used to check for mail addresses during _typing_. Set to `null` to disable conversion of mail addresses.
 
-**Default:** `/([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i`
+**Default:** `/([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi`
 
 **Example with custom Regex**
 
 ```javascript
 magicUrl: {
-  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/i
+  mailRegularExpression: /([\w-\.]+@[\w-\.]+\.[\w-\.]+)/gi
 }
 ```
 
