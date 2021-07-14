@@ -97,6 +97,11 @@ describe('quill-magic-url', () => {
         shouldContain('<p>http://test.de  </p>')
       })
 
+      it('on new word in same line', () => {
+        type(' new ')
+        shouldContain('<p>http://test.de  new </p>')
+      })
+
       it('on blank space and enter', () => {
         type('{enter}')
         shouldContain('<p>http://test.de </p><p><br></p>')

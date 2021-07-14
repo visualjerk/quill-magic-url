@@ -121,28 +121,27 @@ export default class MagicUrl {
       return
     }
 
-    const urlMatch = text.match(this.options.urlRegularExpression)
-    const mailMatch = text.match(this.options.mailRegularExpression)
-    if (urlMatch) {
-      const match = urlMatch.pop()
-      const matchIndex = text.lastIndexOf(match)
-      this.textToUrl(leafIndex + matchIndex, match.trim())
-    } else if (mailMatch) {
-      const match = mailMatch.pop()
-      const matchIndex = text.lastIndexOf(match)
-      this.textToMail(leafIndex + matchIndex, match.trim())
+    const urlMatches = text.match(this.options.urlRegularExpression)
+    const mailMatches = text.match(this.options.mailRegularExpression)
+    if (urlMatches) {
+      this.handleMatches(leafIndex, text, urlMatches, this.urlNormalizer)
+    } else if (mailMatches) {
+      this.handleMatches(leafIndex, text, mailMatches, this.mailNormalizer)
     }
   }
-  textToUrl(index, url) {
-    const ops = new Delta()
-      .retain(index)
-      .retain(url.length, { link: this.urlNormalizer(url) })
-    this.quill.updateContents(ops)
+  handleMatches(leafIndex, text, matches, normalizer) {
+    const match = matches.pop()
+    const matchIndex = text.lastIndexOf(match)
+    const after = text.split(match).pop()
+    if (after.match(/\S/)) {
+      return
+    }
+    this.updateText(leafIndex + matchIndex, match.trim(), normalizer)
   }
-  textToMail(index, mail) {
+  updateText(index, string, normalizer) {
     const ops = new Delta()
       .retain(index)
-      .retain(mail.length, { link: this.mailNormalizer(mail) })
+      .retain(string.length, { link: normalizer(string) })
     this.quill.updateContents(ops)
   }
   normalize(url) {
