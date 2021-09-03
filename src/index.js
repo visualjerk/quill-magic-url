@@ -25,6 +25,15 @@ export default class MagicUrl {
     this.registerBlurListener()
   }
   registerPasteListener() {
+    // Preserves existing links
+    this.quill.clipboard.addMatcher('A', (node, delta) => {
+      const href = node.getAttribute('href')
+      const attributes = delta.ops[0].attributes
+      if (attributes != null && attributes.link != null) {
+        attributes.link = href
+      }
+      return delta
+    })
     this.quill.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
       if (typeof node.data !== 'string') {
         return
