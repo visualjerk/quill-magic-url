@@ -215,5 +215,12 @@ describe('quill-magic-url', () => {
         'i want to be preserved <a href="http://test.de" target="_blank">http://test.de</a> my little pony <a href="http://www.google.com" target="_blank">www.google.com</a> look a mail <a href="mailto:peter@google.com" target="_blank">peter@google.com</a> bam!'
       )
     })
+
+    it('does not alter existing links', () => {
+      paste('<a href="http://www.google.com">http://test.de</a>')
+      shouldContain(
+        '<p><a href="http://www.google.com" target="_blank">http://test.de</a></p>'
+      )
+    })
   })
 })
