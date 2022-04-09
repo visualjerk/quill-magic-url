@@ -125,6 +125,12 @@ export default class MagicUrl {
       return
     }
 
+    const nextLetter = leaf.text[relevantLength]
+    // Do not proceed if we are in the middle of a word
+    if (nextLetter != null && nextLetter.match(/\S/)) {
+      return
+    }
+
     const bailOutEndingRegex = triggeredByInlineWhitespace ? /\s\s$/ : /\s$/
     if (text.match(bailOutEndingRegex)) {
       return
