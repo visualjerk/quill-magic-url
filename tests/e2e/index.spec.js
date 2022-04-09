@@ -85,6 +85,11 @@ describe('quill-magic-url', () => {
       )
     })
 
+    it.only('keeps query parameters', () => {
+      type('www.test.de/?test=1 ')
+      shouldContainLink('http://www.test.de/?test=1', 'www.test.de/?test=1')
+    })
+
     describe('does not trigger', () => {
       beforeEach(() => {
         type('http://test.de {leftarrow}{leftarrow}')
@@ -244,6 +249,11 @@ describe('quill-magic-url', () => {
       shouldContain(
         '<p><a href="http://www.google.com" target="_blank">http://test.de</a></p>'
       )
+    })
+
+    it.only('keeps query parameters', () => {
+      paste('www.test.de/?test=1 ')
+      shouldContainLink('http://www.test.de/?test=1', 'www.test.de/?test=1')
     })
   })
 })
