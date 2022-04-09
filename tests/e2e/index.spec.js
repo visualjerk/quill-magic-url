@@ -85,7 +85,7 @@ describe('quill-magic-url', () => {
       )
     })
 
-    it.only('keeps query parameters', () => {
+    it('keeps query parameters', () => {
       type('www.test.de/?test=1 ')
       shouldContainLink('http://www.test.de/?test=1', 'www.test.de/?test=1')
     })
@@ -251,7 +251,7 @@ describe('quill-magic-url', () => {
       )
     })
 
-    it.only('keeps query parameters', () => {
+    it('keeps query parameters', () => {
       paste('www.test.de/?test=1 ')
       shouldContainLink('http://www.test.de/?test=1', 'www.test.de/?test=1')
     })
