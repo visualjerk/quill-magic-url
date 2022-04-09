@@ -181,6 +181,29 @@ describe('quill-magic-url', () => {
     })
   })
 
+  describe('blur', () => {
+    it('does not convert when inside word', () => {
+      type('https://google.com {leftarrow}{leftarrow}')
+      cy.get('.ql-remove').click()
+      cy.get('@editor').blur()
+      shouldContain('<p>https://google.com </p>')
+    })
+
+    it('does not convert when inside word after clicking out', () => {
+      type(
+        'https://google.com test{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}'
+      )
+      cy.get('.ql-remove').click()
+      cy.get('@editor').click('bottomRight')
+      cy.get('@editor').blur()
+      shouldContain('<p>https://google.com test</p>')
+      cy.get('@editor').click('bottomRight')
+      type('{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}')
+      cy.get('@editor').blur()
+      shouldContain('<p>https://google.com test</p>')
+    })
+  })
+
   describe('paste', () => {
     it('for single url', () => {
       paste('http://test.de')
