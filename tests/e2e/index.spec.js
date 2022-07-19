@@ -255,5 +255,12 @@ describe('quill-magic-url', () => {
       paste('www.test.de/?test=1 ')
       shouldContainLink('http://www.test.de/?test=1', 'www.test.de/?test=1')
     })
+
+    it('does not throw on empty anchor tag', () => {
+      paste('<a href="http://www.google.com"></a>')
+      shouldContain(
+        '<p><a href="http://www.google.com" target="_blank"></a></p>'
+      )
+    })
   })
 })
