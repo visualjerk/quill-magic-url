@@ -28,8 +28,8 @@ export default class MagicUrl {
     // Preserves existing links
     this.quill.clipboard.addMatcher('A', (node, delta) => {
       const href = node.getAttribute('href')
-      const attributes = delta.ops[0]?.attributes || null
-      if (attributes != null && attributes.link != null) {
+      const attributes = delta.ops[0]?.attributes
+      if (attributes?.link != null) {
         attributes.link = href
       }
       return delta

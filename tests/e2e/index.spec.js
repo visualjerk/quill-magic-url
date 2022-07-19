@@ -258,9 +258,7 @@ describe('quill-magic-url', () => {
 
     it('does not throw on empty anchor tag', () => {
       paste('<a href="http://www.google.com"></a>')
-      shouldContain(
-        '<p><a href="http://www.google.com" target="_blank"></a></p>'
-      )
+      shouldContain('<p><br></p>')
     })
   })
 })
