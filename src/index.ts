@@ -1,5 +1,5 @@
 import Delta from 'quill-delta'
-import normalizeUrl, {Options as NormalizeUrlOptions} from 'normalize-url'
+import normalizeUrl, { Options as NormalizeUrlOptions } from 'normalize-url'
 import Quill from 'quill';
 
 declare global {
