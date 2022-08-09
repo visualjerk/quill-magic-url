@@ -3,9 +3,9 @@ import normalizeUrl, {Options as NormalizeUrlOptions} from 'normalize-url'
 import Quill from 'quill';
 
 declare global {
-	interface Window {
-		Quill: typeof Quill;
-	}
+  interface Window {
+    Quill: typeof Quill
+  }
 }
 
 export type MagicUrlOptions = {
@@ -17,7 +17,7 @@ export type MagicUrlOptions = {
   normalizeUrlOptions: NormalizeUrlOptions
 }
 
-export type Normalizer = (stringToNormalize: string) => string;
+export type Normalizer = (stringToNormalize: string) => string
 
 const defaults = {
   globalRegularExpression:
