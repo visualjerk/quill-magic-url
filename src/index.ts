@@ -1,5 +1,23 @@
 import Delta from 'quill-delta'
-import normalizeUrl from 'normalize-url'
+import normalizeUrl, {Options as NormalizeUrlOptions} from 'normalize-url'
+import Quill from 'quill';
+
+declare global {
+	interface Window {
+		Quill: typeof Quill;
+	}
+}
+
+export type MagicUrlOptions = {
+  globalRegularExpression: RegExp
+  urlRegularExpression: RegExp
+  globalMailRegularExpression: RegExp
+  mailRegularExpression: RegExp
+  normalizeRegularExpression: RegExp
+  normalizeUrlOptions: NormalizeUrlOptions
+}
+
+export type Normalizer = (stringToNormalize: string) => string;
 
 const defaults = {
   globalRegularExpression:
@@ -14,7 +32,12 @@ const defaults = {
 }
 
 export default class MagicUrl {
-  constructor(quill, options) {
+  quill: Quill
+  options: MagicUrlOptions
+  urlNormalizer: Normalizer
+  mailNormalizer: Normalizer
+
+  constructor(quill: Quill, options?: Partial<MagicUrlOptions>) {
     this.quill = quill
     options = options || {}
     this.options = { ...defaults, ...options }
@@ -46,7 +69,7 @@ export default class MagicUrl {
       let index = 0
       let urlResult = urlRegExp.exec(node.data)
       let mailResult = mailRegExp.exec(node.data)
-      const handleMatch = (result, regExp, normalizer) => {
+      const handleMatch = (result: RegExpExecArray, regExp: RegExp, normalizer: Normalizer) => {
         const head = node.data.substring(index, result.index)
         newDelta.insert(head)
         const match = result[0]
@@ -98,7 +121,7 @@ export default class MagicUrl {
       ) {
         return
       }
-      this.checkTextForUrl(lastOp.insert.match(/ |\t/))
+      this.checkTextForUrl(!!lastOp.insert.match(/ |\t/))
     })
   }
   registerBlurListener() {
@@ -120,7 +143,7 @@ export default class MagicUrl {
 
     // We only care about the leaf until the current cursor position
     const relevantLength = sel.index - leafIndex
-    const text = leaf.text.slice(0, relevantLength)
+    const text: string = leaf.text.slice(0, relevantLength)
     if (!text || leaf.parent.domNode.localName === 'a') {
       return
     }
@@ -144,7 +167,7 @@ export default class MagicUrl {
       this.handleMatches(leafIndex, text, mailMatches, this.mailNormalizer)
     }
   }
-  handleMatches(leafIndex, text, matches, normalizer) {
+  handleMatches(leafIndex: number, text: string, matches: RegExpMatchArray, normalizer: Normalizer) {
     const match = matches.pop()
     const matchIndex = text.lastIndexOf(match)
     const after = text.split(match).pop()
@@ -153,13 +176,13 @@ export default class MagicUrl {
     }
     this.updateText(leafIndex + matchIndex, match.trim(), normalizer)
   }
-  updateText(index, string, normalizer) {
+  updateText(index: number, string: string, normalizer: Normalizer) {
     const ops = new Delta()
       .retain(index)
       .retain(string.length, { link: normalizer(string) })
     this.quill.updateContents(ops)
   }
-  normalize(url) {
+  normalize(url: string) {
     if (this.options.normalizeRegularExpression.test(url)) {
       try {
         return normalizeUrl(url, this.options.normalizeUrlOptions)
