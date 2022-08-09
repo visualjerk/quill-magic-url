@@ -39,7 +39,6 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.18.6",
     "@types/jest": "^26.0.24",
-    "@types/quill": "^2.0.9",
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "eslint-plugin-jest": "^24.3.6",
@@ -50,6 +49,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@types/quill": "^2.0.9",
     "normalize-url": "^4.5.1",
     "quill-delta": "^3.6.2"
   }
