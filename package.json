@@ -11,7 +11,7 @@
     ]
   },
   "scripts": {
-    "build": "webpack -p --progress --colors && tsc --build tsconfig.json",
+    "build": "webpack -p --progress --colors && tsc --build",
     "dev": "webpack-dev-server --progress --colors",
     "test": "jest",
     "test:e2e": "npm run dev & cypress open"
