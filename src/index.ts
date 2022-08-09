@@ -1,6 +1,6 @@
 import Delta from 'quill-delta'
 import normalizeUrl, { Options as NormalizeUrlOptions } from 'normalize-url'
-import Quill from 'quill';
+import Quill from 'quill'
 
 declare global {
   interface Window {
@@ -69,7 +69,11 @@ export default class MagicUrl {
       let index = 0
       let urlResult = urlRegExp.exec(node.data)
       let mailResult = mailRegExp.exec(node.data)
-      const handleMatch = (result: RegExpExecArray, regExp: RegExp, normalizer: Normalizer) => {
+      const handleMatch = (
+        result: RegExpExecArray,
+        regExp: RegExp,
+        normalizer: Normalizer
+      ) => {
         const head = node.data.substring(index, result.index)
         newDelta.insert(head)
         const match = result[0]
@@ -167,7 +171,12 @@ export default class MagicUrl {
       this.handleMatches(leafIndex, text, mailMatches, this.mailNormalizer)
     }
   }
-  handleMatches(leafIndex: number, text: string, matches: RegExpMatchArray, normalizer: Normalizer) {
+  handleMatches(
+    leafIndex: number,
+    text: string,
+    matches: RegExpMatchArray,
+    normalizer: Normalizer
+  ) {
     const match = matches.pop()
     const matchIndex = text.lastIndexOf(match)
     const after = text.split(match).pop()
