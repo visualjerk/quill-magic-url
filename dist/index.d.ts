@@ -2,7 +2,7 @@ import { Options as NormalizeUrlOptions } from 'normalize-url';
 import Quill from 'quill';
 declare global {
     interface Window {
-        Quill: typeof Quill;
+        Quill?: typeof Quill;
     }
 }
 export declare type MagicUrlOptions = {
