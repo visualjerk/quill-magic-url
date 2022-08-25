@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     path: __dirname,
     libraryTarget: 'umd',
@@ -11,12 +11,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         use: [
           {
             loader: 'babel-loader',
             options: {
               presets: [
+                ["@babel/preset-typescript"],
                 [
                   '@babel/preset-env',
                   {
