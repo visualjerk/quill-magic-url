@@ -1,5 +1,7 @@
 # quill-magic-url
 
+**Looking for maintainer**: If anyone would like to take over responsibility for this plugin or create a new one for Quill 2.x, please let me know.
+
 ![tests](https://github.com/visualjerk/quill-magic-url/actions/workflows/tests.yml/badge.svg) ![publish](https://github.com/visualjerk/quill-magic-url/actions/workflows/publish.yml/badge.svg)
 
 Checks for URLs and mail addresses during typing and pasting and automatically converts them to links and normalizes the links URL.
